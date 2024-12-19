@@ -1,6 +1,6 @@
 <template>
   <v-form @submit.prevent="registrarProduto" ref="form">
-    <!-- Cabeçalho -->
+
     <v-container class="header-background" style="display: flex; justify-content: center;">
     </v-container>
 
@@ -12,6 +12,7 @@
         class="mt-12"
         placeholder="Nome do produto" 
         variant="outlined"
+        :rules="[requiredNamenRule]"
       ></v-text-field>
 
       <v-text-field 
@@ -19,13 +20,16 @@
         @input="handlePriceInput"
         placeholder="Preço de venda" 
         variant="outlined"
+        :rules="[requiredPricenRule]"
       ></v-text-field>
-
+      
       <v-textarea 
         v-model="productData.Description"
         placeholder="Descrição"
         variant="outlined"
+        :rules="[requiredDescriptionRule]"
       ></v-textarea>
+
 
       <v-text-field 
         v-model="productData.RandomCode"
@@ -60,6 +64,7 @@
         variant="outlined" 
         persistent-hint
         type="number"
+        :rules="[minStockRule]"
       ></v-text-field>
 
       <v-btn 
@@ -105,15 +110,22 @@ const cleanFormattedPrice = (value) => {
 // Funções de formatação específicas para cada campo
 const handlePriceInput = (e) => {
   const rawValue = cleanFormattedPrice(e.target.value);
-  const formattedPrice = formatPrice(rawValue); // Aplica formatação para exibição
-  productData.value.Price = formattedPrice; // Armazena o valor formatado no front-end
+  const formattedPrice = formatPrice(rawValue); 
+  productData.value.Price = formattedPrice; 
 };
 
 const handlePromotionalPriceInput = (e) => {
   const rawValue = cleanFormattedPrice(e.target.value);
-  const formattedPrice = formatPrice(rawValue); // Aplica formatação para exibição
-  productData.value.PromotionalPrice = formattedPrice; // Armazena o valor formatado no front-end
+  const formattedPrice = formatPrice(rawValue);
+  productData.value.PromotionalPrice = formattedPrice; 
 };
+
+
+const minStockRule = value => value >= 1 || 'O estoque deve ser no mínimo 1 produto.';
+const requiredDescriptionRule = value =>  !!value || 'Você precisa inserir uma descrição do produto.';
+const requiredNamenRule = value =>  !!value || 'Você precisa inserir um nome para o produto.';
+const requiredPricenRule = value =>  !!value || 'Você precisa inserir um preço para o produto.';
+
 
 function generateProductCode() {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'; 
@@ -155,7 +167,7 @@ const registrarProduto = async () => {
       
       // Resetar o formulário
       form.value.reset();
-      productData.value.RandomCode = generateProductCode(); // Gera um novo código
+      productData.value.RandomCode = generateProductCode(); 
     } catch (error) {
       // Tratar erro
       console.error('Erro ao salvar o produto:', error);
@@ -179,8 +191,12 @@ template {
 }
 
 h1 {
-  color: #000000; /* Azul padrão do Vuetify */
+  color: #000000; 
   margin-bottom: -15px;
+}
+
+.v-text-field {
+  margin-bottom: 10px;
 }
 
 .header-background {
@@ -208,5 +224,10 @@ v-sheet {
 .btnFinishRegister p {
   color: rgb(255, 255, 255) !important;
   letter-spacing: -1px;
+}
+
+.v-text-field .v-input__details {
+  margin: 0px;
+  padding-top: 20px;
 }
 </style>
