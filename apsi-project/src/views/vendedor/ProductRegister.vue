@@ -1,6 +1,5 @@
 <template>
   <v-form @submit.prevent="registrarProduto" ref="form">
-
     <v-container class="header-background" style="display: flex; justify-content: center;">
     </v-container>
 
@@ -56,16 +55,35 @@
         variant="outlined"
       ></v-select>
 
+      <v-row justify="space-between">
+        <v-col cols="auto">
+          <v-switch 
+            v-model="isSwitchOn" 
+          ></v-switch>
+        </v-col>
+        <v-col cols="auto" class="mt-4">
+          <p class="titleManageStock">Gerenciar estoque</p>
+        </v-col>
+      </v-row>
+      
 
-      <h3>Estoque</h3>
-      <v-text-field 
-        v-model="productData.Stock"
-        placeholder="Estoque atual" 
-        variant="outlined" 
-        persistent-hint
-        type="number"
-        :rules="[minStockRule]"
-      ></v-text-field>
+      <div v-if="isSwitchOn">
+        <h3>Estoque</h3>
+        <v-text-field 
+          v-model="productData.Stock"
+          placeholder="Estoque atual" 
+          variant="outlined" 
+          persistent-hint
+          type="number"
+          :rules="[minStockRule]"
+        ></v-text-field>
+        <v-text-field
+          disabled
+          variant="outlined" 
+          >
+            Estoque Mínimo
+        </v-text-field>
+      </div>
 
       <v-btn 
         class="btnFinishRegister text-none" 
@@ -125,6 +143,7 @@ const minStockRule = value => value >= 1 || 'O estoque deve ser no mínimo 1 pro
 const requiredDescriptionRule = value =>  !!value || 'Você precisa inserir uma descrição do produto.';
 const requiredNamenRule = value =>  !!value || 'Você precisa inserir um nome para o produto.';
 const requiredPricenRule = value =>  !!value || 'Você precisa inserir um preço para o produto.';
+const isSwitchOn = ref(false);
 
 
 function generateProductCode() {
@@ -215,6 +234,10 @@ v-sheet {
 
 .v-input__details {
   margin-top: -15px !important;
+}
+
+.titleManageStock {
+  font-weight: 600 !important;
 }
 
 .btnFinishRegister {
